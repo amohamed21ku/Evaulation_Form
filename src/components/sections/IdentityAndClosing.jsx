@@ -36,6 +36,19 @@ const IdentityAndClosing = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
+          {t('identity.futurePlans')}
+        </label>
+        <textarea
+          className="form-textarea"
+          value={data.futurePlans || ''}
+          onChange={(e) => handleChange('futurePlans', e.target.value)}
+          placeholder={t('identity.futurePlansPlaceholder')}
+          rows="5"
+        />
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">
           {t('identity.finalMessage')}
         </label>
         <textarea
