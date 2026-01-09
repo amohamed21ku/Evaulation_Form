@@ -3,7 +3,8 @@
     "allow": [
       "Bash(dir:*)",
       "Bash(npx create-next-app:*)",
-      "Bash(npm create:*)"
+      "Bash(npm create:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

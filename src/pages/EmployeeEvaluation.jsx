@@ -11,7 +11,6 @@ import CurrentPerformance from '../components/sections/CurrentPerformance';
 import ContributionVsSalary from '../components/sections/ContributionVsSalary';
 import CompanyImpact from '../components/sections/CompanyImpact';
 import TeamEvaluation from '../components/sections/TeamEvaluation';
-import BarriersToPerformance from '../components/sections/BarriersToPerformance';
 import FuturePerformance from '../components/sections/FuturePerformance';
 import IdentityAndClosing from '../components/sections/IdentityAndClosing';
 
@@ -22,7 +21,7 @@ const EmployeeEvaluation = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const totalSteps = 10;
+  const totalSteps = 8;
 
   // Auto-save to localStorage
   useEffect(() => {
@@ -49,7 +48,7 @@ const EmployeeEvaluation = () => {
     switch (currentStep) {
       case 0:
         return formData.fullName && formData.jobRole && formData.department && formData.joinDate;
-      case 8:
+      case 7:
         return formData.commitmentActions && formData.commitmentActions.trim().length > 0;
       default:
         return true;
@@ -115,10 +114,8 @@ const EmployeeEvaluation = () => {
       case 6:
         return <TeamEvaluation data={formData} onChange={updateFormData} />;
       case 7:
-        return <BarriersToPerformance data={formData} onChange={updateFormData} />;
-      case 8:
         return <FuturePerformance data={formData} onChange={updateFormData} />;
-      case 9:
+      case 8:
         return <IdentityAndClosing data={formData} onChange={updateFormData} />;
       default:
         return null;

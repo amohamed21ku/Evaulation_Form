@@ -45,9 +45,10 @@ const ContributionVsSalary = ({ data, onChange }) => {
           options={comparisonOptions}
           value={data.salaryComparison || ''}
           onChange={(value) => {
-            handleChange('salaryComparison', value);
             if (value !== 'more') {
-              handleChange('salaryMultiplier', '');
+              onChange({ ...data, salaryComparison: value, salaryMultiplier: '' });
+            } else {
+              handleChange('salaryComparison', value);
             }
           }}
         />

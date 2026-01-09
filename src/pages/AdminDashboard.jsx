@@ -106,12 +106,23 @@ const AdminDashboard = () => {
       more: evaluations.filter(e => e.salaryComparison === 'more').length
     };
 
+    // Calculate multiplier breakdown for those who said "more than salary"
+    const multiplierDist = {
+      '1.5': evaluations.filter(e => e.salaryComparison === 'more' && e.salaryMultiplier === '1.5').length,
+      '2': evaluations.filter(e => e.salaryComparison === 'more' && e.salaryMultiplier === '2').length,
+      '3': evaluations.filter(e => e.salaryComparison === 'more' && e.salaryMultiplier === '3').length,
+      '4': evaluations.filter(e => e.salaryComparison === 'more' && e.salaryMultiplier === '4').length,
+      '5': evaluations.filter(e => e.salaryComparison === 'more' && e.salaryMultiplier === '5').length,
+      '6+': evaluations.filter(e => e.salaryComparison === 'more' && e.salaryMultiplier === '6+').length,
+    };
+
     return {
       total: evaluations.length,
       avgPast: avgPast.toFixed(1),
       avgCurrent: avgCurrent.toFixed(1),
       avgCommitment: avgCommitment.toFixed(1),
-      salaryDist
+      salaryDist,
+      multiplierDist
     };
   };
 
@@ -179,7 +190,7 @@ const AdminDashboard = () => {
     yPos += 10;
 
     doc.setFontSize(11);
-    doc.text(`Past Performance (Last 3 months): ${evaluation.pastContribution}/10`, margin, yPos);
+    doc.text(`Past Performance (Last 6 months): ${evaluation.pastContribution}/10`, margin, yPos);
     yPos += 8;
     doc.text(`Current Performance: ${evaluation.currentContribution}/10`, margin, yPos);
     yPos += 8;
@@ -280,7 +291,12 @@ const AdminDashboard = () => {
                 <BarChart data={[
                   { name: t('admin.lessThanSalary'), value: metrics.salaryDist.less },
                   { name: t('admin.equalToSalary'), value: metrics.salaryDist.equal },
-                  { name: t('admin.moreThanSalary'), value: metrics.salaryDist.more }
+                  { name: '1.5×', value: metrics.multiplierDist['1.5'] },
+                  { name: '2×', value: metrics.multiplierDist['2'] },
+                  { name: '3×', value: metrics.multiplierDist['3'] },
+                  { name: '4×', value: metrics.multiplierDist['4'] },
+                  { name: '5×', value: metrics.multiplierDist['5'] },
+                  { name: '6×+', value: metrics.multiplierDist['6+'] }
                 ]}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
@@ -498,7 +514,7 @@ const AdminDashboard = () => {
                   </h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                     <div style={{ padding: '12px', backgroundColor: 'var(--neutral-bg)', borderRadius: '8px' }}>
-                      <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{t('admin.past')} (3 months)</p>
+                      <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{t('admin.past')} (6 months)</p>
                       <p style={{ fontSize: '24px', fontWeight: '600' }}>{selectedEmployee.pastContribution}/10</p>
                     </div>
                     <div style={{ padding: '12px', backgroundColor: 'var(--neutral-bg)', borderRadius: '8px' }}>
@@ -555,6 +571,158 @@ const AdminDashboard = () => {
                     </p>
                   </div>
                 )}
+
+                {/* Full Evaluation Responses */}
+                <div style={{ borderTop: '2px solid var(--border-color)', paddingTop: '24px', marginTop: '24px' }}>
+                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '16px', fontSize: '18px' }}>
+                    Full Evaluation Responses
+                  </h3>
+                  <div style={{ display: 'grid', gap: '16px' }}>
+                    {selectedEmployee.roleDefinition && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('roleAwareness.roleDefinition')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.roleDefinition}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.topContributions && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('pastPerformance.topContributions')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.topContributions}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.improvementArea && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('pastPerformance.improvement')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.improvementArea}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.salaryReasoning && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('contributionSalary.reasoning')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.salaryReasoning}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.impactAreas && selectedEmployee.impactAreas.length > 0 && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('companyImpact.impactAreas')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.impactAreas.map(area => {
+                            const areaTranslations = {
+                              'revenue': t('companyImpact.revenue'),
+                              'efficiency': t('companyImpact.efficiency'),
+                              'customer': t('companyImpact.customer'),
+                              'innovation': t('companyImpact.innovation'),
+                              'team': t('companyImpact.team'),
+                              'quality': t('companyImpact.quality'),
+                              'strategy': t('companyImpact.strategy'),
+                              'culture': t('companyImpact.culture')
+                            };
+                            return areaTranslations[area] || area;
+                          }).join(', ')}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.impactClarity && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('companyImpact.clarity')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.impactClarity}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.impactClarityHelp && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('companyImpact.clarityHelp')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.impactClarityHelp}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.teamStrength && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('teamEvaluation.teamStrength')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.teamStrength}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.teamGap && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('teamEvaluation.teamGap')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.teamGap}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.commitmentActions && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('futurePerformance.actions')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.commitmentActions}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.futurePlans && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('identity.futurePlans')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.futurePlans}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedEmployee.finalMessage && (
+                      <div>
+                        <h4 style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--text-secondary)' }}>
+                          {t('identity.finalMessage')}
+                        </h4>
+                        <p style={{ backgroundColor: 'var(--neutral-bg)', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                          {selectedEmployee.finalMessage}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 <button
                   className="btn btn-primary"

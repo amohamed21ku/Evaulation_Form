@@ -1,6 +1,5 @@
 import React from 'react';
 import Slider from '../Slider';
-import RadioGroup from '../RadioGroup';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 const TeamEvaluation = ({ data, onChange }) => {
@@ -8,13 +7,6 @@ const TeamEvaluation = ({ data, onChange }) => {
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value });
   };
-
-  const relativeContributionOptions = [
-    { value: 'below', label: t('teamEvaluation.below') },
-    { value: 'average', label: t('teamEvaluation.average') },
-    { value: 'above', label: t('teamEvaluation.above') },
-    { value: 'top', label: t('teamEvaluation.top') }
-  ];
 
   return (
     <div className="card">
@@ -31,18 +23,6 @@ const TeamEvaluation = ({ data, onChange }) => {
           onChange={(value) => handleChange('teamPerformance', value)}
           min={1}
           max={10}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="form-label">
-          {t('teamEvaluation.relativeContribution')}
-        </label>
-        <RadioGroup
-          name="relativeContribution"
-          options={relativeContributionOptions}
-          value={data.relativeContribution || ''}
-          onChange={(value) => handleChange('relativeContribution', value)}
         />
       </div>
 
