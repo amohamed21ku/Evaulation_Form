@@ -7,7 +7,10 @@
       "Bash(npm run dev:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nfix: resolve merge conflict in vercel.json and add routing configuration\n\nFixed merge conflict between HEAD and previous commit. The vercel.json now includes:\n- Rewrites to handle client-side routing (redirects all routes to index.html)\n- Security headers for all routes\n- Cache headers for static assets\n\nThis fixes the 404 error on /admin/login and other routes.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
