@@ -21,7 +21,7 @@ const EmployeeEvaluation = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const totalSteps = 8;
+  const totalSteps = 9;
 
   // Auto-save to localStorage
   useEffect(() => {
@@ -46,10 +46,58 @@ const EmployeeEvaluation = () => {
 
   const validateCurrentStep = () => {
     switch (currentStep) {
-      case 0:
-        return formData.fullName && formData.jobRole && formData.department && formData.joinDate;
-      case 7:
-        return formData.commitmentActions && formData.commitmentActions.trim().length > 0;
+      case 0: // Employee Info
+        return formData.fullName &&
+               formData.jobRole &&
+               formData.department &&
+               formData.joinDate;
+
+      case 1: // Role Awareness
+        return formData.roleDefinition &&
+               formData.roleDefinition.trim().length > 0;
+
+      case 2: // Past Performance
+        return formData.pastContribution &&
+               formData.topContributions &&
+               formData.topContributions.trim().length > 0 &&
+               formData.improvementArea &&
+               formData.improvementArea.trim().length > 0;
+
+      case 3: // Current Performance
+        return formData.currentContribution &&
+               formData.performanceComparison &&
+               formData.performanceConsistency;
+
+      case 4: // Contribution vs Salary
+        if (!formData.salaryComparison) return false;
+        if (formData.salaryComparison === 'more' && !formData.salaryMultiplier) return false;
+        return formData.salaryReasoning && formData.salaryReasoning.trim().length > 0;
+
+      case 5: // Company Impact
+        return formData.impactAreas &&
+               formData.impactAreas.length > 0 &&
+               formData.impactClarity &&
+               // If clarity is 'no' or 'somewhat', require clarityHelp
+               ((formData.impactClarity === 'no' || formData.impactClarity === 'somewhat')
+                 ? (formData.impactClarityHelp && formData.impactClarityHelp.trim().length > 0)
+                 : true);
+
+      case 6: // Team Evaluation
+        return formData.teamPerformance &&
+               formData.teamStrength &&
+               formData.teamStrength.trim().length > 0 &&
+               formData.teamGap &&
+               formData.teamGap.trim().length > 0;
+
+      case 7: // Future Performance
+        return formData.futureExpectation &&
+               formData.commitmentLevel &&
+               formData.commitmentActions &&
+               formData.commitmentActions.trim().length > 0;
+
+      case 8: // Identity and Closing
+        return formData.identityStatement;
+
       default:
         return true;
     }

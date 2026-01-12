@@ -28,7 +28,7 @@ const TeamEvaluation = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('teamEvaluation.teamStrength')}
+          {t('teamEvaluation.teamStrength')} *
         </label>
         <input
           type="text"
@@ -36,12 +36,13 @@ const TeamEvaluation = ({ data, onChange }) => {
           value={data.teamStrength || ''}
           onChange={(e) => handleChange('teamStrength', e.target.value)}
           placeholder={t('teamEvaluation.teamStrengthPlaceholder')}
+          required
         />
       </div>
 
       <div className="form-group">
         <label className="form-label">
-          {t('teamEvaluation.teamGap')}
+          {t('teamEvaluation.teamGap')} *
         </label>
         <input
           type="text"
@@ -49,6 +50,7 @@ const TeamEvaluation = ({ data, onChange }) => {
           value={data.teamGap || ''}
           onChange={(e) => handleChange('teamGap', e.target.value)}
           placeholder={t('teamEvaluation.teamGapPlaceholder')}
+          required
         />
         <p className="micro-text">{t('teamEvaluation.microText')}</p>
       </div>

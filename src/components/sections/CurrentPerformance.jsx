@@ -46,7 +46,7 @@ const CurrentPerformance = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('currentPerformance.comparison')}
+          {t('currentPerformance.comparison')} *
         </label>
         <RadioGroup
           name="performanceComparison"
@@ -58,7 +58,7 @@ const CurrentPerformance = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('currentPerformance.consistency')}
+          {t('currentPerformance.consistency')} *
         </label>
         <RadioGroup
           name="performanceConsistency"

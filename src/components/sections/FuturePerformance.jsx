@@ -24,7 +24,7 @@ const FuturePerformance = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('futurePerformance.expectation')}
+          {t('futurePerformance.expectation')} *
         </label>
         <RadioGroup
           name="futureExpectation"

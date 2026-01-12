@@ -16,7 +16,7 @@ const RoleAwareness = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('roleAwareness.roleDefinition')}
+          {t('roleAwareness.roleDefinition')} *
         </label>
         <textarea
           className="form-textarea"
@@ -24,6 +24,7 @@ const RoleAwareness = ({ data, onChange }) => {
           onChange={(e) => handleChange('roleDefinition', e.target.value)}
           placeholder={t('roleAwareness.roleDefinitionPlaceholder')}
           rows="4"
+          required
         />
         <p className="micro-text">{t('roleAwareness.microText')}</p>
       </div>

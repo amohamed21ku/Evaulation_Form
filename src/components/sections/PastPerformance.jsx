@@ -35,7 +35,7 @@ const PastPerformance = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('pastPerformance.topContributions')}
+          {t('pastPerformance.topContributions')} *
         </label>
         <textarea
           className="form-textarea"
@@ -43,12 +43,13 @@ const PastPerformance = ({ data, onChange }) => {
           onChange={(e) => handleChange('topContributions', e.target.value)}
           placeholder={t('pastPerformance.topContributionsPlaceholder')}
           rows="4"
+          required
         />
       </div>
 
       <div className="form-group">
         <label className="form-label">
-          {t('pastPerformance.improvement')}
+          {t('pastPerformance.improvement')} *
         </label>
         <textarea
           className="form-textarea"
@@ -56,6 +57,7 @@ const PastPerformance = ({ data, onChange }) => {
           onChange={(e) => handleChange('improvementArea', e.target.value)}
           placeholder={t('pastPerformance.improvementPlaceholder')}
           rows="3"
+          required
         />
         <p className="micro-text">{t('pastPerformance.microText')}</p>
       </div>

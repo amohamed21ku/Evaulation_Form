@@ -24,7 +24,7 @@ const IdentityAndClosing = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('identity.statement')}
+          {t('identity.statement')} *
         </label>
         <RadioGroup
           name="identityStatement"

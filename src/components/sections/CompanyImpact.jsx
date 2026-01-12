@@ -35,7 +35,7 @@ const CompanyImpact = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('companyImpact.impactAreas')}
+          {t('companyImpact.impactAreas')} *
         </label>
         <CheckboxGroup
           options={impactAreas}
@@ -46,7 +46,7 @@ const CompanyImpact = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('companyImpact.clarity')}
+          {t('companyImpact.clarity')} *
         </label>
         <RadioGroup
           name="impactClarity"
@@ -59,7 +59,7 @@ const CompanyImpact = ({ data, onChange }) => {
       {(data.impactClarity === 'no' || data.impactClarity === 'somewhat') && (
         <div className="form-group" style={{ marginLeft: '20px', paddingLeft: '20px', borderLeft: '3px solid var(--warning-color)' }}>
           <label className="form-label">
-            {t('companyImpact.clarityHelp')}
+            {t('companyImpact.clarityHelp')} *
           </label>
           <textarea
             className="form-textarea"
@@ -67,6 +67,7 @@ const CompanyImpact = ({ data, onChange }) => {
             onChange={(e) => handleChange('impactClarityHelp', e.target.value)}
             placeholder={t('companyImpact.clarityHelpPlaceholder')}
             rows="3"
+            required
           />
         </div>
       )}

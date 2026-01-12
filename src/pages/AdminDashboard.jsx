@@ -20,6 +20,7 @@ import {
 } from 'recharts';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const AdminDashboard = () => {
   const [evaluations, setEvaluations] = useState([]);
@@ -168,40 +169,223 @@ const AdminDashboard = () => {
     XLSX.writeFile(wb, 'employee-evaluations.xlsx');
   };
 
-  const exportToPDF = (evaluation) => {
-    const doc = new jsPDF();
-    const margin = 20;
-    let yPos = margin;
+  const exportToPDF = async (evaluation) => {
+    // Create a temporary container for the PDF content
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    tempDiv.style.width = '210mm'; // A4 width
+    tempDiv.style.padding = '20mm';
+    tempDiv.style.backgroundColor = 'white';
+    tempDiv.style.fontFamily = 'Arial, sans-serif';
+    tempDiv.style.fontSize = '12px';
+    tempDiv.style.lineHeight = '1.6';
+    tempDiv.style.color = '#333';
 
-    doc.setFontSize(18);
-    doc.text('Employee Evaluation Summary', margin, yPos);
-    yPos += 15;
+    // Build the HTML content with all evaluation data
+    tempDiv.innerHTML = `
+      <div style="max-width: 170mm;">
+        <h1 style="color: #2563eb; margin-bottom: 10px; font-size: 24px;">Employee Evaluation Report</h1>
+        <p style="color: #666; margin-bottom: 30px;">${new Date(evaluation.submittedAt).toLocaleDateString()}</p>
 
-    doc.setFontSize(12);
-    doc.text(`Name: ${evaluation.fullName}`, margin, yPos);
-    yPos += 8;
-    doc.text(`Role: ${evaluation.jobRole}`, margin, yPos);
-    yPos += 8;
-    doc.text(`Department: ${evaluation.department}`, margin, yPos);
-    yPos += 12;
+        <div style="margin-bottom: 25px;">
+          <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Employee Information</h2>
+          <p><strong>Name:</strong> ${evaluation.fullName}</p>
+          <p><strong>Role:</strong> ${evaluation.jobRole}</p>
+          <p><strong>Department:</strong> ${evaluation.department}</p>
+        </div>
 
-    doc.setFontSize(14);
-    doc.text('Performance Scores', margin, yPos);
-    yPos += 10;
+        <div style="margin-bottom: 25px;">
+          <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Performance Metrics</h2>
+          <p><strong>Past Performance (Last 6 months):</strong> ${evaluation.pastContribution}/10</p>
+          <p><strong>Current Performance:</strong> ${evaluation.currentContribution}/10</p>
+          <p><strong>Future Commitment:</strong> ${evaluation.commitmentLevel}/10</p>
+          <p><strong>Team Performance:</strong> ${evaluation.teamPerformance}/10</p>
+        </div>
 
-    doc.setFontSize(11);
-    doc.text(`Past Performance (Last 6 months): ${evaluation.pastContribution}/10`, margin, yPos);
-    yPos += 8;
-    doc.text(`Current Performance: ${evaluation.currentContribution}/10`, margin, yPos);
-    yPos += 8;
-    doc.text(`Future Commitment: ${evaluation.commitmentLevel}/10`, margin, yPos);
-    yPos += 12;
+        <div style="margin-bottom: 25px;">
+          <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Compensation & Engagement</h2>
+          <p><strong>Salary Comparison:</strong> ${evaluation.salaryComparison}</p>
+          ${evaluation.salaryMultiplier ? `<p><strong>Value Multiplier:</strong> ${evaluation.salaryMultiplier}x</p>` : ''}
+          <p><strong>Engagement Level:</strong> ${evaluation.identityStatement}</p>
+          <p><strong>Future Expectation:</strong> ${evaluation.futureExpectation || 'Not specified'}</p>
+          ${evaluation.mainBlocker ? `<p><strong>Main Barrier:</strong> ${evaluation.mainBlocker}</p>` : ''}
+        </div>
 
-    doc.text(`Salary Comparison: ${evaluation.salaryComparison}`, margin, yPos);
-    yPos += 8;
-    doc.text(`Engagement: ${evaluation.identityStatement}`, margin, yPos);
+        ${evaluation.roleDefinition ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Role Definition</h2>
+            <p style="white-space: pre-wrap;">${evaluation.roleDefinition}</p>
+          </div>
+        ` : ''}
 
-    doc.save(`${evaluation.fullName.replace(/\s+/g, '-')}-evaluation.pdf`);
+        ${evaluation.topContributions ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Top Contributions</h2>
+            <p style="white-space: pre-wrap;">${evaluation.topContributions}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.improvementArea ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Area for Improvement</h2>
+            <p style="white-space: pre-wrap;">${evaluation.improvementArea}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.salaryReasoning ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Salary Comparison Reasoning</h2>
+            <p style="white-space: pre-wrap;">${evaluation.salaryReasoning}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.impactAreas && evaluation.impactAreas.length > 0 ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Impact Areas</h2>
+            <p>${evaluation.impactAreas.map(area => {
+              const translations = {
+                'revenue': 'Revenue Growth',
+                'efficiency': 'Operational Efficiency',
+                'customer': 'Customer Satisfaction',
+                'innovation': 'Innovation',
+                'team': 'Team Development',
+                'quality': 'Quality Improvement',
+                'strategy': 'Strategic Planning',
+                'culture': 'Culture Building'
+              };
+              return translations[area] || area;
+            }).join(', ')}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.impactClarity ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Impact Clarity</h2>
+            <p style="white-space: pre-wrap;">${evaluation.impactClarity}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.impactClarityHelp ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">How to Improve Impact Clarity</h2>
+            <p style="white-space: pre-wrap;">${evaluation.impactClarityHelp}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.teamStrength ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Team Strength</h2>
+            <p style="white-space: pre-wrap;">${evaluation.teamStrength}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.teamGap ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Team Gap/Weakness</h2>
+            <p style="white-space: pre-wrap;">${evaluation.teamGap}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.commitmentActions ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Commitment Actions</h2>
+            <p style="white-space: pre-wrap;">${evaluation.commitmentActions}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.futurePlans ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Future Plans</h2>
+            <p style="white-space: pre-wrap;">${evaluation.futurePlans}</p>
+          </div>
+        ` : ''}
+
+        ${evaluation.finalMessage ? `
+          <div style="margin-bottom: 25px;">
+            <h2 style="color: #2563eb; font-size: 18px; margin-bottom: 12px; border-bottom: 2px solid #2563eb; padding-bottom: 5px;">Final Thoughts</h2>
+            <p style="white-space: pre-wrap;">${evaluation.finalMessage}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    // Append to body temporarily
+    document.body.appendChild(tempDiv);
+
+    try {
+      // Convert the HTML to canvas with high quality
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      // Create PDF from canvas
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      // Calculate the ratio to fit width
+      const ratio = pdfWidth / imgWidth;
+      const scaledHeight = imgHeight * ratio;
+
+      // If content fits on one page
+      if (scaledHeight <= pdfHeight) {
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, scaledHeight);
+      } else {
+        // Multi-page handling
+        let position = 0;
+        let pageNumber = 0;
+
+        while (position < scaledHeight) {
+          if (pageNumber > 0) {
+            pdf.addPage();
+          }
+
+          // Calculate the portion of the image to show on this page
+          const sourceY = (position / ratio);
+          const sourceHeight = (pdfHeight / ratio);
+
+          // Create a temporary canvas for this page
+          const pageCanvas = document.createElement('canvas');
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = Math.min(sourceHeight, imgHeight - sourceY);
+
+          const pageCtx = pageCanvas.getContext('2d');
+          pageCtx.drawImage(
+            canvas,
+            0, sourceY,
+            canvas.width, pageCanvas.height,
+            0, 0,
+            canvas.width, pageCanvas.height
+          );
+
+          const pageImgData = pageCanvas.toDataURL('image/png');
+          pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pageCanvas.height * ratio);
+
+          position += pdfHeight;
+          pageNumber++;
+        }
+      }
+
+      pdf.save(`${evaluation.fullName.replace(/\s+/g, '-')}-evaluation.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      // Clean up
+      document.body.removeChild(tempDiv);
+    }
   };
 
   const metrics = calculateMetrics();

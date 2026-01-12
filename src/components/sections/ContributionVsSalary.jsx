@@ -38,7 +38,7 @@ const ContributionVsSalary = ({ data, onChange }) => {
 
       <div className="form-group">
         <label className="form-label">
-          {t('contributionSalary.question')}
+          {t('contributionSalary.question')} *
         </label>
         <RadioGroup
           name="salaryComparison"
@@ -57,7 +57,7 @@ const ContributionVsSalary = ({ data, onChange }) => {
       {data.salaryComparison === 'more' && (
         <div className="form-group" style={{ marginLeft: '20px', paddingLeft: '20px', borderLeft: '3px solid var(--primary-color)' }}>
           <label className="form-label">
-            {t('contributionSalary.multiplier')}
+            {t('contributionSalary.multiplier')} *
           </label>
           <RadioGroup
             name="salaryMultiplier"
@@ -71,7 +71,7 @@ const ContributionVsSalary = ({ data, onChange }) => {
       {data.salaryComparison && (
         <div className="form-group">
           <label className="form-label">
-            {t('contributionSalary.reasoning')}
+            {t('contributionSalary.reasoning')} *
           </label>
           <textarea
             className="form-textarea"
@@ -79,6 +79,7 @@ const ContributionVsSalary = ({ data, onChange }) => {
             onChange={(e) => handleChange('salaryReasoning', e.target.value)}
             placeholder={t('contributionSalary.reasoningPlaceholder')}
             rows="4"
+            required
           />
           <p className="micro-text">{t('contributionSalary.microText')}</p>
         </div>
